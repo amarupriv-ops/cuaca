@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pemantauan Cuaca Real-time</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #3498db;
@@ -14,6 +15,10 @@
             --danger: #e74c3c;
             --warning: #f39c12;
             --success: #2ecc71;
+            --sunny: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            --cloudy: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
+            --rainy: linear-gradient(135deg, #0984e3 0%, #2d3436 100%);
+            --stormy: linear-gradient(135deg, #2d3436 0%, #6c5ce7 100%);
         }
         
         * {
@@ -24,10 +29,24 @@
         }
         
         body {
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            background: var(--sunny);
             color: var(--light);
             min-height: 100vh;
             padding: 20px;
+            transition: background 1.5s ease;
+            overflow-x: hidden;
+        }
+        
+        body.cloudy {
+            background: var(--cloudy);
+        }
+        
+        body.rainy {
+            background: var(--rainy);
+        }
+        
+        body.stormy {
+            background: var(--stormy);
         }
         
         .container {
@@ -43,6 +62,7 @@
             border-radius: 15px;
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            animation: fadeIn 1.5s ease;
         }
         
         h1 {
@@ -69,6 +89,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.18);
+            animation: slideUp 0.8s ease;
         }
         
         .card-title {
@@ -86,17 +107,22 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
         
         .temperature {
             font-size: 4rem;
             font-weight: bold;
             margin: 10px 0;
+            transition: all 0.5s ease;
         }
         
         .weather-icon {
             font-size: 5rem;
             margin: 15px 0;
+            position: relative;
+            z-index: 2;
         }
         
         .weather-details {
@@ -113,6 +139,11 @@
             padding: 10px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .detail-item:hover {
+            transform: translateY(-5px);
         }
         
         .compass-container {
@@ -160,7 +191,7 @@
             left: 50%;
             transform-origin: bottom center;
             transform: translateX(-50%) rotate(0deg);
-            transition: transform 0.5s ease;
+            transition: transform 2s cubic-bezier(0.17, 0.67, 0.83, 0.67);
             border-radius: 2px;
         }
         
@@ -190,6 +221,12 @@
             padding: 15px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .forecast-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
         }
         
         .forecast-day {
@@ -234,6 +271,8 @@
             font-weight: bold;
             text-align: center;
             margin: 20px 0;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s infinite;
         }
         
         .date {
@@ -241,6 +280,101 @@
             text-align: center;
             margin-bottom: 20px;
             opacity: 0.9;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        
+        @keyframes rain {
+            0% { transform: translateY(-100px); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        /* Weather animations */
+        .sun-animation {
+            animation: rotate 20s linear infinite, float 5s ease-in-out infinite;
+        }
+        
+        .cloud-animation {
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .rain-animation {
+            animation: shake 0.5s ease-in-out infinite;
+        }
+        
+        .storm-animation {
+            animation: shake 0.3s ease-in-out infinite;
+        }
+        
+        /* Particle effects */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+        
+        .sun-particle {
+            background: rgba(255, 255, 0, 0.3);
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .rain-particle {
+            width: 2px;
+            height: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            animation: rain 1s linear infinite;
+        }
+        
+        .snow-particle {
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: rain 5s linear infinite;
         }
         
         @media (max-width: 768px) {
@@ -260,12 +394,36 @@
                 font-size: 4rem;
             }
         }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .updated-time {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
     </style>
 </head>
-<body>
+<body class="sunny">
+    <div class="particles" id="particles"></div>
+    
     <div class="container">
         <header>
-            <h1>Pemantauan Cuaca Real-time</h1>
+            <h1><i class="fas fa-cloud-sun"></i> Pemantauan Cuaca Real-time</h1>
             <p class="subtitle">Informasi cuaca terkini dengan data satelit dan prediksi akurat</p>
         </header>
         
@@ -274,29 +432,30 @@
         
         <div class="dashboard">
             <div class="card current-weather">
-                <h2 class="card-title">Cuaca Saat Ini</h2>
+                <h2 class="card-title">Cuaca Saat Ini <span class="loading" id="weather-loading"></span></h2>
                 <div class="weather-icon" id="weather-icon">☀️</div>
                 <div class="temperature" id="temperature">28°C</div>
                 <div class="weather-condition" id="weather-condition">Cerah</div>
                 
                 <div class="weather-details">
                     <div class="detail-item">
-                        <span>Kelembaban:</span>
+                        <span><i class="fas fa-tint"></i> Kelembaban:</span>
                         <span id="humidity">65%</span>
                     </div>
                     <div class="detail-item">
-                        <span>Tekanan:</span>
+                        <span><i class="fas fa-tachometer-alt"></i> Tekanan:</span>
                         <span id="pressure">1013 hPa</span>
                     </div>
                     <div class="detail-item">
-                        <span>Kecepatan Angin:</span>
+                        <span><i class="fas fa-wind"></i> Kecepatan Angin:</span>
                         <span id="wind-speed">12 km/jam</span>
                     </div>
                     <div class="detail-item">
-                        <span>Arah Angin:</span>
+                        <span><i class="fas fa-compass"></i> Arah Angin:</span>
                         <span id="wind-direction">Timur Laut</span>
                     </div>
                 </div>
+                <div class="updated-time" id="weather-updated">Diperbarui: <span id="weather-time">Sekarang</span></div>
             </div>
             
             <div class="card">
@@ -319,17 +478,22 @@
             </div>
             
             <div class="card forecast">
-                <h2 class="card-title">Prakiraan Cuaca 5 Hari</h2>
+                <h2 class="card-title">Prakiraan Cuaca 5 Hari <span class="loading" id="forecast-loading"></span></h2>
                 <div class="forecast-container" id="forecast-container">
                     <!-- Forecast items will be added by JavaScript -->
                 </div>
+                <div class="updated-time" id="forecast-updated">Diperbarui: <span id="forecast-time">Sekarang</span></div>
             </div>
             
             <div class="card">
                 <h2 class="card-title">Peta Cuaca Satelit</h2>
                 <div class="map-container">
                     <div class="map-overlay">
-                        Peta cuaca satelit akan ditampilkan di sini
+                        <div>
+                            <i class="fas fa-satellite fa-3x"></i>
+                            <p>Peta cuaca satelit real-time</p>
+                            <div class="loading"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -337,6 +501,40 @@
     </div>
 
     <script>
+        // Weather conditions and their properties
+        const weatherConditions = {
+            'Cerah': {
+                icon: '☀️',
+                animation: 'sun-animation',
+                bodyClass: 'sunny',
+                particles: 'sun'
+            },
+            'Berawan': {
+                icon: '⛅',
+                animation: 'cloud-animation',
+                bodyClass: 'cloudy',
+                particles: 'cloud'
+            },
+            'Hujan Ringan': {
+                icon: '🌧️',
+                animation: 'rain-animation',
+                bodyClass: 'rainy',
+                particles: 'rain'
+            },
+            'Hujan Lebat': {
+                icon: '⛈️',
+                animation: 'storm-animation',
+                bodyClass: 'stormy',
+                particles: 'rain'
+            },
+            'Mendung': {
+                icon: '☁️',
+                animation: 'cloud-animation',
+                bodyClass: 'cloudy',
+                particles: 'cloud'
+            }
+        };
+        
         // Update clock and date
         function updateClock() {
             const now = new Date();
@@ -356,78 +554,168 @@
         updateClock();
         setInterval(updateClock, 1000);
         
+        // Create weather particles based on condition
+        function createParticles(condition) {
+            const particlesContainer = document.getElementById('particles');
+            particlesContainer.innerHTML = '';
+            
+            const particleType = weatherConditions[condition].particles;
+            const particleCount = particleType === 'rain' ? 50 : particleType === 'sun' ? 10 : 0;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                if (particleType === 'sun') {
+                    particle.classList.add('sun-particle');
+                    particle.style.width = `${Math.random() * 20 + 5}px`;
+                    particle.style.height = particle.style.width;
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.top = `${Math.random() * 100}%`;
+                    particle.style.animationDelay = `${Math.random() * 5}s`;
+                } else if (particleType === 'rain') {
+                    particle.classList.add('rain-particle');
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.top = `${Math.random() * 100 - 100}%`;
+                    particle.style.animationDelay = `${Math.random() * 2}s`;
+                    particle.style.opacity = Math.random() * 0.5 + 0.3;
+                }
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Animate number change
+        function animateValue(element, start, end, duration) {
+            const range = end - start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                element.textContent = current + (element.id === 'temperature' ? '°C' : '');
+                if (current === end) {
+                    clearInterval(timer);
+                }
+            }, stepTime);
+        }
+        
         // Simulate weather data (in a real app, this would come from an API)
         function updateWeatherData() {
-            // Current weather
-            const temperatures = [26, 27, 28, 29, 30, 31, 32];
-            const conditions = ['Cerah', 'Berawan', 'Hujan Ringan', 'Hujan Lebat', 'Mendung'];
-            const icons = ['☀️', '⛅', '🌧️', '⛈️', '☁️'];
+            // Show loading
+            document.getElementById('weather-loading').style.display = 'inline-block';
             
-            const randomTemp = temperatures[Math.floor(Math.random() * temperatures.length)];
-            const randomConditionIndex = Math.floor(Math.random() * conditions.length);
-            
-            document.getElementById('temperature').textContent = `${randomTemp}°C`;
-            document.getElementById('weather-condition').textContent = conditions[randomConditionIndex];
-            document.getElementById('weather-icon').textContent = icons[randomConditionIndex];
-            
-            // Weather details
-            document.getElementById('humidity').textContent = `${Math.floor(Math.random() * 30) + 50}%`;
-            document.getElementById('pressure').textContent = `${Math.floor(Math.random() * 20) + 1000} hPa`;
-            
-            const windSpeed = Math.floor(Math.random() * 20) + 5;
-            document.getElementById('wind-speed').textContent = `${windSpeed} km/jam`;
-            
-            // Wind direction
-            const directions = ['Utara', 'Timur Laut', 'Timur', 'Tenggara', 'Selatan', 'Barat Daya', 'Barat', 'Barat Laut'];
-            const directionIndex = Math.floor(Math.random() * directions.length);
-            const windDirection = directions[directionIndex];
-            document.getElementById('wind-direction').textContent = windDirection;
-            
-            // Update compass
-            const compassNeedle = document.getElementById('compass-needle');
-            const compassDirection = document.getElementById('compass-direction');
-            
-            // Convert direction to degrees
-            const directionDegrees = directionIndex * 45;
-            compassNeedle.style.transform = `translateX(-50%) rotate(${directionDegrees}deg)`;
-            compassDirection.textContent = windDirection;
+            // Simulate API delay
+            setTimeout(() => {
+                // Current weather
+                const temperatures = [26, 27, 28, 29, 30, 31, 32];
+                const conditions = ['Cerah', 'Berawan', 'Hujan Ringan', 'Hujan Lebat', 'Mendung'];
+                
+                const randomTemp = temperatures[Math.floor(Math.random() * temperatures.length)];
+                const randomConditionIndex = Math.floor(Math.random() * conditions.length);
+                const condition = conditions[randomConditionIndex];
+                
+                // Update temperature with animation
+                const tempElement = document.getElementById('temperature');
+                const currentTemp = parseInt(tempElement.textContent);
+                animateValue(tempElement, currentTemp, randomTemp, 1000);
+                
+                // Update condition and icon
+                document.getElementById('weather-condition').textContent = condition;
+                const iconElement = document.getElementById('weather-icon');
+                iconElement.textContent = weatherConditions[condition].icon;
+                iconElement.className = 'weather-icon ' + weatherConditions[condition].animation;
+                
+                // Update body class for background
+                document.body.className = weatherConditions[condition].bodyClass;
+                
+                // Create particles
+                createParticles(condition);
+                
+                // Weather details
+                const humidity = Math.floor(Math.random() * 30) + 50;
+                document.getElementById('humidity').textContent = `${humidity}%`;
+                
+                const pressure = Math.floor(Math.random() * 20) + 1000;
+                document.getElementById('pressure').textContent = `${pressure} hPa`;
+                
+                const windSpeed = Math.floor(Math.random() * 20) + 5;
+                document.getElementById('wind-speed').textContent = `${windSpeed} km/jam`;
+                
+                // Wind direction
+                const directions = ['Utara', 'Timur Laut', 'Timur', 'Tenggara', 'Selatan', 'Barat Daya', 'Barat', 'Barat Laut'];
+                const directionIndex = Math.floor(Math.random() * directions.length);
+                const windDirection = directions[directionIndex];
+                document.getElementById('wind-direction').textContent = windDirection;
+                
+                // Update compass
+                const compassNeedle = document.getElementById('compass-needle');
+                const compassDirection = document.getElementById('compass-direction');
+                
+                // Convert direction to degrees
+                const directionDegrees = directionIndex * 45;
+                compassNeedle.style.transform = `translateX(-50%) rotate(${directionDegrees}deg)`;
+                compassDirection.textContent = windDirection;
+                
+                // Update timestamp
+                const now = new Date();
+                document.getElementById('weather-time').textContent = now.toLocaleTimeString('id-ID');
+                
+                // Hide loading
+                document.getElementById('weather-loading').style.display = 'none';
+            }, 1000);
         }
         
         // Generate forecast data
         function generateForecast() {
-            const forecastContainer = document.getElementById('forecast-container');
-            forecastContainer.innerHTML = '';
+            // Show loading
+            document.getElementById('forecast-loading').style.display = 'inline-block';
             
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const icons = ['☀️', '⛅', '🌧️', '⛈️', '☁️'];
-            
-            const today = new Date();
-            
-            for (let i = 1; i <= 5; i++) {
-                const forecastDate = new Date();
-                forecastDate.setDate(today.getDate() + i);
+            // Simulate API delay
+            setTimeout(() => {
+                const forecastContainer = document.getElementById('forecast-container');
+                forecastContainer.innerHTML = '';
                 
-                const dayName = days[forecastDate.getDay()];
-                const dateStr = `${forecastDate.getDate()}/${forecastDate.getMonth() + 1}`;
+                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const conditions = ['Cerah', 'Berawan', 'Hujan Ringan', 'Hujan Lebat', 'Mendung'];
                 
-                const minTemp = Math.floor(Math.random() * 5) + 22;
-                const maxTemp = minTemp + Math.floor(Math.random() * 5) + 3;
-                const conditionIndex = Math.floor(Math.random() * icons.length);
+                const today = new Date();
                 
-                const forecastItem = document.createElement('div');
-                forecastItem.className = 'forecast-item';
-                forecastItem.innerHTML = `
-                    <div class="forecast-day">${dayName}</div>
-                    <div class="forecast-date">${dateStr}</div>
-                    <div class="forecast-icon">${icons[conditionIndex]}</div>
-                    <div class="forecast-temp">
-                        <span>${maxTemp}°</span>
-                        <span>${minTemp}°</span>
-                    </div>
-                `;
+                for (let i = 1; i <= 5; i++) {
+                    const forecastDate = new Date();
+                    forecastDate.setDate(today.getDate() + i);
+                    
+                    const dayName = days[forecastDate.getDay()];
+                    const dateStr = `${forecastDate.getDate()}/${forecastDate.getMonth() + 1}`;
+                    
+                    const minTemp = Math.floor(Math.random() * 5) + 22;
+                    const maxTemp = minTemp + Math.floor(Math.random() * 5) + 3;
+                    const conditionIndex = Math.floor(Math.random() * conditions.length);
+                    const condition = conditions[conditionIndex];
+                    
+                    const forecastItem = document.createElement('div');
+                    forecastItem.className = 'forecast-item';
+                    forecastItem.innerHTML = `
+                        <div class="forecast-day">${dayName}</div>
+                        <div class="forecast-date">${dateStr}</div>
+                        <div class="forecast-icon ${weatherConditions[condition].animation}">${weatherConditions[condition].icon}</div>
+                        <div class="forecast-temp">
+                            <span>${maxTemp}°</span>
+                            <span>${minTemp}°</span>
+                        </div>
+                    `;
+                    
+                    forecastContainer.appendChild(forecastItem);
+                }
                 
-                forecastContainer.appendChild(forecastItem);
-            }
+                // Update timestamp
+                const now = new Date();
+                document.getElementById('forecast-time').textContent = now.toLocaleTimeString('id-ID');
+                
+                // Hide loading
+                document.getElementById('forecast-loading').style.display = 'none';
+            }, 1500);
         }
         
         // Initialize weather data
